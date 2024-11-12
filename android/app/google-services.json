@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1061787728677",
+    "project_id": "cooltrack-5fbf1",
+    "storage_bucket": "cooltrack-5fbf1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1061787728677:android:562d6cc66d9eb579bcf8cc",
+        "android_client_info": {
+          "package_name": "com.cooltrack.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDE5mhItKK3ajXCCQSWPjoF2lrP0GXR3MU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
