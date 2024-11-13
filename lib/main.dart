@@ -1,59 +1,20 @@
-// ignore_for_file: prefer_final_fields
-
 import 'package:flutter/material.dart';
+import 'PantallaInicioSesion.dart'; // Asegúrate de importar la pantalla de inicio de sesión.
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'CoolTrack',
+      title: 'Aplicación de Refrigeración',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Prueba de compartir proyecto'),
+      home: PantallaInicioSesion(), // Establece PantallaInicioSesion como pantalla inicial.
+      debugShowCheckedModeBanner: false, // Opcional, para quitar la etiqueta de debug
     );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'esto es solo una prueba para compartir el proyecto',
-              ),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-            ],
-          ),
-        ));
   }
 }
