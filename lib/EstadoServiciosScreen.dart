@@ -1,7 +1,10 @@
+// ignore_for_file: file_names, use_super_parameters, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
 class EstadoServiciosScreen extends StatefulWidget {
-  const EstadoServiciosScreen({Key? key}) : super(key: key); // Agregado 'key' en el constructor
+  const EstadoServiciosScreen({Key? key})
+      : super(key: key); // Agregado 'key' en el constructor
 
   @override
   _EstadoServiciosScreenState createState() => _EstadoServiciosScreenState();
@@ -97,7 +100,8 @@ class _EstadoServiciosScreenState extends State<EstadoServiciosScreen> {
                   final servicio = servicios[index];
                   return Card(
                     margin: const EdgeInsets.symmetric(vertical: 8),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                     child: ListTile(
                       leading: Icon(
                         Icons.build,
@@ -109,7 +113,8 @@ class _EstadoServiciosScreenState extends State<EstadoServiciosScreen> {
                       ),
                       subtitle: Text(
                         "Estado: ${servicio["estado"]}",
-                        style: TextStyle(color: _colorEstado(servicio["estado"]!)),
+                        style:
+                            TextStyle(color: _colorEstado(servicio["estado"]!)),
                       ),
                       trailing: PopupMenuButton<String>(
                         onSelected: (value) {
@@ -119,9 +124,13 @@ class _EstadoServiciosScreenState extends State<EstadoServiciosScreen> {
                             _eliminarServicio(index);
                           }
                         },
-                        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                          const PopupMenuItem<String>(value: 'Cambiar estado', child: Text('Cambiar estado')),
-                          const PopupMenuItem<String>(value: 'Eliminar', child: Text('Eliminar')),
+                        itemBuilder: (BuildContext context) =>
+                            <PopupMenuEntry<String>>[
+                          const PopupMenuItem<String>(
+                              value: 'Cambiar estado',
+                              child: Text('Cambiar estado')),
+                          const PopupMenuItem<String>(
+                              value: 'Eliminar', child: Text('Eliminar')),
                         ],
                       ),
                     ),
@@ -136,7 +145,8 @@ class _EstadoServiciosScreenState extends State<EstadoServiciosScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
               child: const Text(
                 "Agregar Nuevo Servicio",

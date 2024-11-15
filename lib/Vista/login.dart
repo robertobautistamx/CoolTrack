@@ -1,25 +1,32 @@
-import 'package:flutter/material.dart';
-import 'PantallaPrincipal.dart'; // Importa PantallaPrincipal para la redirección después del login.
+// ignore_for_file: use_build_context_synchronously, unused_import, use_super_parameters
 
-class PantallaInicioSesion extends StatefulWidget {
+import 'package:cool_track/Controlador/login_controller.dart';
+import 'package:flutter/material.dart';
+import 'registro.dart';
+
+class Login extends StatefulWidget {
+  const Login({Key? key}) : super(key: key);
+
   @override
-  _PantallaInicioSesionState createState() => _PantallaInicioSesionState();
+  // ignore: library_private_types_in_public_api
+  _LoginState createState() => _LoginState();
 }
 
-class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
-  final TextEditingController _usuarioController = TextEditingController();
+class _LoginState extends State<Login> {
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _contrasenaController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _ocultarContrasena = true;
   bool _cargando = false;
-  String _rolSeleccionado = 'Cliente'; // Valor predeterminado
 
-  // Lista de usuarios, contraseñas y roles válidos
-  final Map<String, Map<String, String>> _usuariosValidos = {
-    "admin": {"password": "1234", "rol": "Administrador"},
-    "cliente": {"password": "abcd", "rol": "Cliente"},
-    "empleado": {"password": "5678", "rol": "Empleado"},
-  };
+  final LoginController _loginController = LoginController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _contrasenaController.dispose();
+    super.dispose();
+  }
 
   Future<void> _iniciarSesion() async {
     if (_formKey.currentState?.validate() ?? false) {
@@ -27,37 +34,48 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
         _cargando = true;
       });
 
-      await Future.delayed(const Duration(seconds: 2)); // Simula una llamada de red.
-
-      setState(() {
-        _cargando = false;
-      });
-
-      // Verifica si el usuario, contraseña y rol coinciden con alguna entrada en _usuariosValidos
-      final usuarioData = _usuariosValidos[_usuarioController.text];
-      if (usuarioData != null &&
-          usuarioData["password"] == _contrasenaController.text &&
-          usuarioData["rol"] == _rolSeleccionado) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => PantallaPrincipal()),
+      try {
+        var user = await _loginController.login(
+          _emailController.text.trim(),
+          _contrasenaController.text.trim(),
         );
-      } else {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text("Error"),
-            content: const Text("Usuario, contraseña o rol incorrectos"),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text("Aceptar"),
-              ),
-            ],
-          ),
-        );
+
+        setState(() {
+          _cargando = false;
+        });
+
+        if (user != null) {
+          Navigator.pushReplacementNamed(context, '/home');
+        } else {
+          _mostrarError("No se pudo iniciar sesión");
+        }
+      } catch (e) {
+        setState(() {
+          _cargando = false;
+        });
+        _mostrarError(e.toString());
       }
     }
+  }
+
+  void _mostrarError(String mensaje) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Error"),
+        content: Text(mensaje),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("Aceptar"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _navegarARegistro() {
+    Navigator.pushNamed(context, '/register');
   }
 
   @override
@@ -69,7 +87,6 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.ac_unit, size: 80, color: Colors.lightBlue[700]),
                 const SizedBox(height: 20),
@@ -82,46 +99,20 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                DropdownButtonFormField<String>(
-                  value: _rolSeleccionado,
-                  items: ['Cliente', 'Administrador', 'Empleado']
-                      .map((rol) => DropdownMenuItem(
-                            value: rol,
-                            child: Text(rol),
-                          ))
-                      .toList(),
-                  onChanged: (nuevoRol) {
-                    setState(() {
-                      _rolSeleccionado = nuevoRol!;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Rol',
-                    prefixIcon: Icon(Icons.person_outline, color: Colors.lightBlue[700]),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, selecciona tu rol';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 15),
                 TextFormField(
-                  controller: _usuarioController,
+                  controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: 'Usuario',
-                    prefixIcon: Icon(Icons.person_outline, color: Colors.lightBlue[700]),
+                    labelText: 'Correo electrónico',
+                    prefixIcon: Icon(Icons.email_outlined,
+                        color: Colors.lightBlue[700]),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
+                  keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, ingresa tu usuario';
+                      return 'Por favor, ingresa tu correo electrónico';
                     }
                     return null;
                   },
@@ -132,10 +123,13 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                   obscureText: _ocultarContrasena,
                   decoration: InputDecoration(
                     labelText: 'Contraseña',
-                    prefixIcon: Icon(Icons.lock_outline, color: Colors.lightBlue[700]),
+                    prefixIcon:
+                        Icon(Icons.lock_outline, color: Colors.lightBlue[700]),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _ocultarContrasena ? Icons.visibility : Icons.visibility_off,
+                        _ocultarContrasena
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                         color: Colors.lightBlue[700],
                       ),
                       onPressed: () {
@@ -162,7 +156,8 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                         onPressed: _iniciarSesion,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.lightBlue[700],
-                          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 100),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 100),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
@@ -177,6 +172,11 @@ class _PantallaInicioSesionState extends State<PantallaInicioSesion> {
                           ),
                         ),
                       ),
+                const SizedBox(height: 15),
+                TextButton(
+                  onPressed: _navegarARegistro,
+                  child: const Text("¿No tienes cuenta? Regístrate aquí"),
+                ),
               ],
             ),
           ),
