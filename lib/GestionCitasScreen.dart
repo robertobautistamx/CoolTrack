@@ -1,3 +1,5 @@
+// ignore_for_file: use_key_in_widget_constructors, file_names, library_private_types_in_public_api, prefer_const_constructors
+
 import 'package:flutter/material.dart';
 
 class GestionCitasScreen extends StatefulWidget {
@@ -7,14 +9,34 @@ class GestionCitasScreen extends StatefulWidget {
 
 class _GestionCitasScreenState extends State<GestionCitasScreen> {
   List<Map<String, dynamic>> citas = [
-    {"id": 1, "titulo": "Mantenimiento AC", "fecha": "2024-01-15", "estado": "Pendiente"},
-    {"id": 2, "titulo": "Instalación de AC", "fecha": "2024-01-20", "estado": "En Progreso"},
-    {"id": 3, "titulo": "Revisión de sistema", "fecha": "2024-01-22", "estado": "Completada"},
+    {
+      "id": 1,
+      "titulo": "Mantenimiento AC",
+      "fecha": "2024-01-15",
+      "estado": "Pendiente"
+    },
+    {
+      "id": 2,
+      "titulo": "Instalación de AC",
+      "fecha": "2024-01-20",
+      "estado": "En Progreso"
+    },
+    {
+      "id": 3,
+      "titulo": "Revisión de sistema",
+      "fecha": "2024-01-22",
+      "estado": "Completada"
+    },
   ];
 
   void agregarCita(String titulo, String fecha) {
     setState(() {
-      citas.add({"id": citas.length + 1, "titulo": titulo, "fecha": fecha, "estado": "Pendiente"});
+      citas.add({
+        "id": citas.length + 1,
+        "titulo": titulo,
+        "fecha": fecha,
+        "estado": "Pendiente"
+      });
     });
   }
 
@@ -48,7 +70,8 @@ class _GestionCitasScreenState extends State<GestionCitasScreen> {
                   final cita = citas[index];
                   return Card(
                     margin: EdgeInsets.symmetric(vertical: 8),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                     child: ListTile(
                       leading: Icon(
                         Icons.calendar_today,
@@ -62,17 +85,23 @@ class _GestionCitasScreenState extends State<GestionCitasScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text("Fecha: ${cita['fecha']}"),
-                          Text("Estado: ${cita['estado']}", style: TextStyle(color: _colorEstado(cita['estado']))),
+                          Text("Estado: ${cita['estado']}",
+                              style: TextStyle(
+                                  color: _colorEstado(cita['estado']))),
                         ],
                       ),
                       trailing: PopupMenuButton<String>(
                         onSelected: (String nuevoEstado) {
                           cambiarEstado(cita['id'], nuevoEstado);
                         },
-                        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                          const PopupMenuItem<String>(value: "Pendiente", child: Text('Pendiente')),
-                          const PopupMenuItem<String>(value: "En Progreso", child: Text('En Progreso')),
-                          const PopupMenuItem<String>(value: "Completada", child: Text('Completada')),
+                        itemBuilder: (BuildContext context) =>
+                            <PopupMenuEntry<String>>[
+                          const PopupMenuItem<String>(
+                              value: "Pendiente", child: Text('Pendiente')),
+                          const PopupMenuItem<String>(
+                              value: "En Progreso", child: Text('En Progreso')),
+                          const PopupMenuItem<String>(
+                              value: "Completada", child: Text('Completada')),
                         ],
                       ),
                       onTap: () {
@@ -81,7 +110,8 @@ class _GestionCitasScreenState extends State<GestionCitasScreen> {
                           context: context,
                           builder: (context) => AlertDialog(
                             title: Text(cita['titulo']),
-                            content: Text("Detalles de la cita:\nFecha: ${cita['fecha']}\nEstado: ${cita['estado']}"),
+                            content: Text(
+                                "Detalles de la cita:\nFecha: ${cita['fecha']}\nEstado: ${cita['estado']}"),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context),
@@ -92,7 +122,8 @@ class _GestionCitasScreenState extends State<GestionCitasScreen> {
                                   eliminarCita(cita['id']);
                                   Navigator.pop(context);
                                 },
-                                child: Text("Eliminar", style: TextStyle(color: Colors.red)),
+                                child: Text("Eliminar",
+                                    style: TextStyle(color: Colors.red)),
                               ),
                             ],
                           ),
@@ -115,7 +146,8 @@ class _GestionCitasScreenState extends State<GestionCitasScreen> {
                 // Agregar nueva cita
                 _mostrarDialogoAgregarCita(context);
               },
-              child: Text("Agregar Nueva Cita", style: TextStyle(color: Colors.white)),
+              child: Text("Agregar Nueva Cita",
+                  style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -178,4 +210,3 @@ class _GestionCitasScreenState extends State<GestionCitasScreen> {
     }
   }
 }
-

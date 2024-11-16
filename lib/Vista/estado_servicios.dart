@@ -1,40 +1,18 @@
+// ignore_for_file: use_super_parameters, library_private_types_in_public_api, unnecessary_nullable_for_final_variable_declarations
+
+import 'package:cool_track/Controlador/service_controller.dart';
+import 'package:cool_track/Modelo/service.dart';
 import 'package:flutter/material.dart';
 
-class EstadoServiciosScreen extends StatefulWidget {
-  const EstadoServiciosScreen({Key? key}) : super(key: key); // Agregado 'key' en el constructor
+class EstadoServicios extends StatefulWidget {
+  const EstadoServicios({Key? key}) : super(key: key);
 
   @override
-  _EstadoServiciosScreenState createState() => _EstadoServiciosScreenState();
+  _EstadoServiciosState createState() => _EstadoServiciosState();
 }
 
-class _EstadoServiciosScreenState extends State<EstadoServiciosScreen> {
-  List<Map<String, String>> servicios = [
-    {"titulo": "Instalación de aire acondicionado", "estado": "Pendiente"},
-    {"titulo": "Revisión de sistema", "estado": "En progreso"},
-    {"titulo": "Mantenimiento preventivo", "estado": "Completado"},
-  ];
-
-  void _cambiarEstado(int index) {
-    setState(() {
-      if (servicios[index]["estado"] == "Pendiente") {
-        servicios[index]["estado"] = "En progreso";
-      } else if (servicios[index]["estado"] == "En progreso") {
-        servicios[index]["estado"] = "Completado";
-      }
-    });
-  }
-
-  void _agregarServicio(String titulo) {
-    setState(() {
-      servicios.add({"titulo": titulo, "estado": "Pendiente"});
-    });
-  }
-
-  void _eliminarServicio(int index) {
-    setState(() {
-      servicios.removeAt(index);
-    });
-  }
+class _EstadoServiciosState extends State<EstadoServicios> {
+  final ServicioController _controller = ServicioController();
 
   void _mostrarDialogoAgregarServicio() {
     String tituloNuevoServicio = "";
@@ -55,7 +33,9 @@ class _EstadoServiciosScreenState extends State<EstadoServiciosScreen> {
           TextButton(
             onPressed: () {
               if (tituloNuevoServicio.isNotEmpty) {
-                _agregarServicio(tituloNuevoServicio);
+                setState(() {
+                  _controller.agregarServicio(tituloNuevoServicio);
+                });
               }
               Navigator.pop(context);
             },
@@ -64,19 +44,6 @@ class _EstadoServiciosScreenState extends State<EstadoServiciosScreen> {
         ],
       ),
     );
-  }
-
-  Color _colorEstado(String estado) {
-    switch (estado) {
-      case "Pendiente":
-        return Colors.orange;
-      case "En progreso":
-        return Colors.blue;
-      case "Completado":
-        return Colors.green;
-      default:
-        return Colors.grey;
-    }
   }
 
   @override
@@ -92,36 +59,45 @@ class _EstadoServiciosScreenState extends State<EstadoServiciosScreen> {
           children: [
             Expanded(
               child: ListView.builder(
-                itemCount: servicios.length,
+                itemCount: _controller.servicios.length,
                 itemBuilder: (context, index) {
-                  final servicio = servicios[index];
+                  final Service servicio = _controller.servicios[index];
                   return Card(
                     margin: const EdgeInsets.symmetric(vertical: 8),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
                     child: ListTile(
                       leading: Icon(
                         Icons.build,
-                        color: _colorEstado(servicio["estado"]!),
+                        color: ServicioController.colorEstado(servicio.estado),
                       ),
                       title: Text(
-                        servicio["titulo"]!,
+                        servicio.titulo,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
-                        "Estado: ${servicio["estado"]}",
-                        style: TextStyle(color: _colorEstado(servicio["estado"]!)),
+                        "Estado: ${servicio.estado}",
+                        style: TextStyle(
+                            color: ServicioController.colorEstado(
+                                servicio.estado)),
                       ),
                       trailing: PopupMenuButton<String>(
                         onSelected: (value) {
-                          if (value == 'Cambiar estado') {
-                            _cambiarEstado(index);
-                          } else if (value == 'Eliminar') {
-                            _eliminarServicio(index);
-                          }
+                          setState(() {
+                            if (value == 'Cambiar estado') {
+                              _controller.cambiarEstado(index);
+                            } else if (value == 'Eliminar') {
+                              _controller.eliminarServicio(index);
+                            }
+                          });
                         },
-                        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                          const PopupMenuItem<String>(value: 'Cambiar estado', child: Text('Cambiar estado')),
-                          const PopupMenuItem<String>(value: 'Eliminar', child: Text('Eliminar')),
+                        itemBuilder: (BuildContext context) =>
+                            <PopupMenuEntry<String>>[
+                          const PopupMenuItem<String>(
+                              value: 'Cambiar estado',
+                              child: Text('Cambiar estado')),
+                          const PopupMenuItem<String>(
+                              value: 'Eliminar', child: Text('Eliminar')),
                         ],
                       ),
                     ),
@@ -136,7 +112,8 @@ class _EstadoServiciosScreenState extends State<EstadoServiciosScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
               child: const Text(
                 "Agregar Nuevo Servicio",
