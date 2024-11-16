@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-class EstadisticasGeneralesScreen extends StatelessWidget {
+class EstadisticasGenerales extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
